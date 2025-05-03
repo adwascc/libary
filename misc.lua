@@ -5304,15 +5304,14 @@ Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
 Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 local function CreateCircularIcon(Config)
-    local Icon = Library:GetIcon(Config.Icon)
-    local CircularIcon = Library:Create('ImageButton', {
-        Image = Icon,
-        Size = UDim2.new(0, 100, 0, 100), -- Explicitly set size to 100x100
-        Position = UDim2.new(0, 10, 0, 10), -- Top-left corner with padding
-        BackgroundTransparency = 1,
-        ZIndex = 100, -- Ensure it appears above other UI elements
-        Parent = ScreenGui,
-    })
+    local Icon = Config.Icon
+    local CircularIcon = Instance.new("ImageButton")
+    CircularIcon.Image = Icon
+    CircularIcon.Size = UDim2.new(0, 100, 0, 100) -- Explicitly set size to 100x100
+    CircularIcon.Position = UDim2.new(0, 10, 0, 10) -- Top-left corner with padding
+    CircularIcon.BackgroundTransparency = 1
+    CircularIcon.ZIndex = 100 -- Ensure it appears above other UI elements
+    CircularIcon.Parent = game.CoreGui -- Or wherever you want to parent it
 
     -- Make the icon circular
     local UICorner = Instance.new("UICorner", CircularIcon)
@@ -5321,15 +5320,13 @@ local function CreateCircularIcon(Config)
     -- Add click functionality to toggle UI visibility and copy the Discord link
     CircularIcon.MouseButton1Click:Connect(function()
         setclipboard("https://discord.gg/xkYzren9AF") -- Replace with your Discord link
-        Library:Notify("Discord link copied to clipboard!", 2)
+        print("Discord link copied to clipboard!")
 
         -- Toggle UI visibility
-        if Library.Holder.Visible then
-            Library.Holder.Visible = false
-            Library.NoUI = true
+        if Library.ScreenGui.Visible then
+            Library.ScreenGui.Visible = false
         else
-            Library.Holder.Visible = true
-            Library.NoUI = false
+            Library.ScreenGui.Visible = true
         end
     end)
 
@@ -5359,7 +5356,7 @@ local function CreateCircularIcon(Config)
         end
     end)
 
-    InputService.InputChanged:Connect(function(input)
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             update(input)
         end
